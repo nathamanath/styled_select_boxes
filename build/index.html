@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>styled selects</title>
+    <link rel="stylesheet" type="text/css" href="./main.css">
+  </head>
+  <body>
+
+    <select id="select_1" class="styled">
+      <option>choose one</option>
+      <option value="1">something</option>
+      <option value="2">something else</option>
+    </select>
+
+    <select id="select_2" class="styled">
+      <option>choose one</option>
+      <option value="1" selected="selected">something</option>
+      <option value="2">something else</option>
+    </select>
+
+    <script src="./js/styled_selects.js"></script>
+
+    <script>
+      selects = document.querySelectorAll('.styled')
+      StyledSelects.init(selects)
+    </script>
+  </body>
+</html>

@@ -1,0 +1,71 @@
+*,
+*:before,
+*:after
+  -moz-box-sizing: border-box
+  -webkit-box-sizing: border-box
+  box-sizing: border-box
+
+body
+  color: #000
+
+.styled_select
+  background: #F5F5F5
+  border: 1px solid #000
+  padding: 0.25em
+  position: absolute
+  z-index: 1
+  color: #000
+
+  &.open
+    z-index: 999
+
+    &>.styled_select_options
+      max-height: 20em
+      overflow: auto
+
+    &>.styled_select_selected:after
+
+.styled_select_wrapper
+  height: 2em
+  display: inline-block
+
+  ul
+    margin: 0
+    padding: 0
+
+.styled_select_selected
+  position: relative
+  padding: 0
+  display: block
+  cursor: pointer
+
+  &:after
+    position: absolute
+    top: 0.25em
+    right: 0.5em
+    background: #898989
+    color: #000
+    width: 13px
+    height: 13px
+    display: block
+    content: "v"
+    padding: 0 4px
+    line-height: 11px
+    letter-spacing: 0
+    font-size: 10px
+    border-radius: 20px
+
+.styled_select_options
+  max-height: 0px
+  width: 100%
+  overflow: hidden
+  -webkit-transition: max-height 0.2s ease-out
+  -moz-transition: max-height 0.2s ease-out
+  -o-transition: max-height 0.2s ease-out
+  transition: max-height 0.2s ease-out
+
+.styled_select_option
+  border-top: 1px dotted #000
+  padding: 0.5em
+  cursor: pointer
+  color: #000
