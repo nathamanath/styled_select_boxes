@@ -5,7 +5,7 @@
   var __bind = function(fn, me){ return function(){ return fn.apply(me, arguments); }; };
 
   this.StyledSelects = (function() {
-    StyledSelects.elements = [];
+    var hideOrigional;
 
     StyledSelects.selects = [];
 
@@ -23,15 +23,38 @@
     };
 
     StyledSelects.click = function(e) {
-      var id, target;
+      var id, select, target, _i, _len, _ref, _results;
       target = e.target;
       if (target.className === 'styled_select_selected') {
         id = target.parentNode.getAttribute('data-styled-select-id');
-        return StyledSelects.selects[id].selectClicked();
+        StyledSelects.selects[id].selectClicked();
+        return StyledSelects.closeAllBut(id);
       } else if (target.className === 'styled_select_option') {
         id = target.parentNode.parentNode.getAttribute('data-styled-select-id');
-        return StyledSelects.selects[id].optionClicked(target);
+        StyledSelects.selects[id].optionClicked(target);
+        return StyledSelects.closeAllBut(id);
+      } else {
+        _ref = StyledSelects.selects;
+        _results = [];
+        for (_i = 0, _len = _ref.length; _i < _len; _i++) {
+          select = _ref[_i];
+          _results.push(select.closeOptions());
+        }
+        return _results;
       }
+    };
+
+    StyledSelects.closeAllBut = function(id) {
+      var i, _i, _ref, _results;
+      _results = [];
+      for (i = _i = 0, _ref = StyledSelects.selects.length - 1; _i <= _ref; i = _i += 1) {
+        if (i !== id * 1) {
+          _results.push(StyledSelects.selects[i].closeOptions());
+        } else {
+          _results.push(void 0);
+        }
+      }
+      return _results;
     };
 
     function StyledSelects(el, instanceId) {
@@ -42,13 +65,12 @@
       this.el = el;
       this.options = [];
       this.width = this.el.offsetWidth;
-      console.log(this.width);
       this.instanceId = instanceId;
+      this.open = false;
       this.optionsHTML = "";
-      this.hideOrigional();
+      hideOrigional(this.el);
       this.getOptions();
       this.selectedOption = this.getSelected();
-      this.open = false;
       this.render();
     }
 
@@ -112,12 +134,12 @@
       return this.el.parentNode.appendChild(this.self);
     };
 
-    StyledSelects.prototype.hideOrigional = function() {
-      this.el.style.width = 0;
-      this.el.style.height = 0;
-      this.el.style.opacity = 0;
-      this.el.style.margin = 0;
-      return this.el.style.padding = 0;
+    hideOrigional = function(el) {
+      el.style.width = 0;
+      el.style.height = 0;
+      el.style.opacity = 0;
+      el.style.margin = 0;
+      return el.style.padding = 0;
     };
 
     StyledSelects.prototype.fireChangeEvent = function() {
@@ -137,12 +159,12 @@
       return this.open;
     };
 
-    StyledSelects.prototype.openSelect = function() {
+    StyledSelects.prototype.openOptions = function() {
       this.open = true;
       return this.self.querySelector('.styled_select').className += " open";
     };
 
-    StyledSelects.prototype.closeSelect = function() {
+    StyledSelects.prototype.closeOptions = function() {
       var el;
       this.open = false;
       el = this.self.querySelector('.styled_select');
@@ -151,9 +173,9 @@
 
     StyledSelects.prototype.selectClicked = function() {
       if (this.isOpen()) {
-        return this.closeSelect();
+        return this.closeOptions();
       } else {
-        return this.openSelect();
+        return this.openOptions();
       }
     };
 

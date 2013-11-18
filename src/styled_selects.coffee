@@ -1,16 +1,13 @@
 ###global window, document, console###
 
 class @StyledSelects
-  @elements   = []
-  @selects  = []
+  @selects = []
 
   # Class methods
-
   @init: (elements) ->
     if elements instanceof Object
       for element in elements
         @selects.push new @(element, @selects.length)
-
     else
       @selects.push new @(elements, @selects.length)
 
@@ -22,6 +19,7 @@ class @StyledSelects
     if target.className is 'styled_select_selected'
       id = target.parentNode.getAttribute('data-styled-select-id')
       @selects[id].selectClicked()
+      @closeAllBut(id)
 
     else if target.className is 'styled_select_option'
       id =  target.
@@ -29,24 +27,30 @@ class @StyledSelects
             parentNode.getAttribute('data-styled-select-id')
 
       @selects[id].optionClicked(target)
+      @closeAllBut(id)
+
+    else
+      for select in @selects
+        select.closeOptions()
+
+  @closeAllBut: (id) =>
+    for i in [0..@selects.length - 1] by 1
+      if i != id*1
+        @selects[i].closeOptions()
 
   # Instance methods
-
   constructor: (el, instanceId) ->
-    @el         = el
-    @options    = []
-    @width      = @el.offsetWidth
-    console.log @width
-    @instanceId = instanceId
+    @el           = el
+    @options      = []
+    @width        = @el.offsetWidth
+    @instanceId   = instanceId
+    @open         = false
+    @optionsHTML  = ""
 
-    @optionsHTML = ""
-
-    @hideOrigional()
+    hideOrigional(@el)
     @getOptions()
 
     @selectedOption = @getSelected()
-
-    @open = false
 
     @render()
 
@@ -99,7 +103,7 @@ class @StyledSelects
     document.getElementById(@el.id).selectedIndex = index
     @self.querySelector('span').innerHTML = @el.options[index].innerHTML
 
-  optionTemplate: ( index, value, label ) ->
+  optionTemplate: (index, value, label) ->
     """
       <li class="styled_select_option"
         data-option-index="#{index}"
@@ -119,12 +123,12 @@ class @StyledSelects
 
     @el.parentNode.appendChild @self
 
-  hideOrigional: ->
-    @el.style.width     = 0
-    @el.style.height    = 0
-    @el.style.opacity   = 0
-    @el.style.margin    = 0
-    @el.style.padding   = 0
+  hideOrigional = (el) ->
+    el.style.width     = 0
+    el.style.height    = 0
+    el.style.opacity   = 0
+    el.style.margin    = 0
+    el.style.padding   = 0
 
   fireChangeEvent: =>
     if document.createEvent
@@ -141,20 +145,20 @@ class @StyledSelects
   isOpen: ->
     @open
 
-  openSelect: ->
+  openOptions: ->
     @open = true
     @self.querySelector('.styled_select').className += " open"
 
-  closeSelect: ->
+  closeOptions: ->
     @open = false
     el = @self.querySelector('.styled_select')
     el.className = el.className.replace /(\s)?open/, ''
 
   selectClicked: =>
     if @isOpen()
-      @closeSelect()
+      @closeOptions()
     else
-      @openSelect()
+      @openOptions()
 
   documnentClicked: (e) =>
     klass = e.target.className

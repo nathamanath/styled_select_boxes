@@ -18,11 +18,17 @@
       <option value="2">something else</option>
     </select>
 
-    <script src="./js/styled_selects.js"></script>
+    <script src="./styled_selects.js"></script>
 
     <script>
-      selects = document.querySelectorAll('.styled')
-      StyledSelects.init(selects)
+      var selects = document.querySelectorAll('.styled'),
+          select = document.getElementById('select_1');
+
+      StyledSelects.init(selects);
+
+      select.addEventListener('change', function(e){
+        alert(this.options[this.selectedIndex].innerHTML)
+      }, false);
     </script>
   </body>
 </html>
